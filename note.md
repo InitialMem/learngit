@@ -29,3 +29,12 @@ git add `fileName`
 git commit -m `"commit"`
 ```
 
+## 查看版本库状态
+
+```bash
+#查看状态
+git status
+#查看详细的修改内容
+git diff
+```
+
