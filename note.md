@@ -114,9 +114,61 @@ git restore --staged `fileName`
 1. 远程仓库和用户的通信通过SSH加密，首先需要创建SSH key
 
 ```bash
+#生成SSH密钥
 ssh-keygen -t rsa -C "youremail@example.com"
 ```
 
 生成完毕后，在用户主目录里找到`.ssh`目录，`id_rsa`私钥和`id_rsa.pub`公钥就是SSH用来建立连接的密钥对，公钥可以放心告诉任何人
 
 2. 在GitHub远程仓库添加公钥，这样可以确认只有你自己才可以推送
+
+**关联和推送**
+
+在GitHub创建Repository新仓库后，我们可以从这个仓库克隆出新仓库或者和某个仓库关联
+
+本地仓库关联远程库，origin代表的就是远程仓库，关联时要加上具体的地址，因为我们已经添加了SSH公钥，所以GitHub会接受本地的推送
+
+```bash
+#关联远程仓库
+git remote add origin git@github.com:`UserName`/`RepoName`.git
+#推送本地内容到远程，`-u`参数相当于设置了推送的默认值，之后只需要使用`git push`就会自动推到该仓库的master分支
+git push -u origin master
+git push
+```
+
+**SSH警告**
+
+第一次使用Git的`clone`，`push`命令时都会有一个警告，需要你确认GitHub的Key的指纹信息是否真的来自GitHub的服务器，输入`yes`回车即可。
+
+Git会输出一个警告，告诉你已经把GitHub的Key添加到本机的一个信任列表里了：
+
+`Warning: Permanently added 'github.com' (RSA) to the list of known hosts.`
+
+这个警告只会出现一次，后面的操作就不会有任何警告了。
+
+如果你实在担心有人冒充GitHub服务器，输入`yes`前可以对照[GitHub的RSA Key的指纹信息](https://help.github.com/articles/what-are-github-s-ssh-key-fingerprints/)是否与SSH连接给出的一致。
+
+**查看和移除关联**
+
+这里其实只是解除了本地和远程的绑定关系，并不是物理上删除了远程库。远程库本身并没有任何改动。要真正删除远程库，需要登录到GitHub，在后台页面找到删除按钮再删除。
+
+```bash
+#查看关联的远程库
+git remote -v
+#移除和远程库的关联，默认远程仓库地址的别名为origin，在关联时决定
+git remote rm origin
+```
+
+**克隆仓库**
+
+Git支持多种协议，包括`https`，`ssh`
+
+```bash
+#默认的git@使用的是ssh协议
+git clone git@github.com/`path`
+#https协议的速度较慢，对于某些只开放http端口的公司使用
+git clone https://github.com/`path`
+```
+
+
+
